@@ -1,20 +1,26 @@
 from .map_navigator import MapNavigator
-from config import Config
+# from ..config import Config
 
+class LazyFileMapNavigator(MapNavigator):
+    def __init__(self, abs_file_path):
+        self.abs_file_path = abs_file_path
+        # self.__cursor_x = -1
+        # self.__cursor_y = 0
+        # self.reset()
+        # self.__map = map_2d_array
+        # # validation might slow things down, so let's make it configurable
+        # if Config.validate:
+        #     self.__validate()
+        # self.__width = len(self.__map[0])
+        # self.__height = len(self.__map)
 
-class InMemoryMapNavigator(MapNavigator):
-    def __init__(self, map_2d_array):
-        self.reset()
-        self.__map = map_2d_array
-        # validation might slow things down, so let's make it configurable
-        if Config.validate:
-            self.__validate()
-        self.__width = len(self.__map[0])
-        self.__height = len(self.__map)
-        print("H: {}, W: {}".format(self.__height, self.__width))
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        print(self.abs_file_path)
 
     def move_right_with_wrapping(self):
-        # print("x: {}, y: {}".format(self.__cursor_x, self.__cursor_y))
         if self.__cursor_y == self.__height - 1 and self.__cursor_x == self.__width - 1:
             return False
 
@@ -55,11 +61,11 @@ class InMemoryMapNavigator(MapNavigator):
         return [r1, r2]
 
     def __validate(self):
+        # TODO add validation
         return True
 
     def update_current_element(self, val):
         self.__map[self.__cursor_y][self.__cursor_x] = val
-        # print(self.__map)
 
     def reset(self):
         # resets the pointer only, not the map itself
