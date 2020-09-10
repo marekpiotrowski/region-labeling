@@ -3,10 +3,31 @@ from ..config import Config
 
 
 class InMemoryMapNavigator(MapNavigator):
+    """
+    Class representing InMemoryMapNavigator, where 2d map of islands is given as a 2d list.
+
+    ...
+
+    Attributes
+    ----------
+        __cursor_x : int
+            Pointer to currently analysed pixel in "x" axis
+        __cursor_y : int
+            Pointer to currently analysed pixel in "y" axis
+        __width : int
+            Number of elements in each row.
+        __height : int
+            Number of elements in each column.
+        __map: list of lists of ints
+            The "in-memory" 2d array representation of the map.
+
+    Methods
+    -------
+        Please see MapNavigator specification.
+    """
     def __init__(self, map_2d_array):
         self.__cursor_x = -1
         self.__cursor_y = 0
-        self.reset()
         self.__map = map_2d_array
         # validation might slow things down, so let's make it configurable
         if Config.validate:
@@ -27,12 +48,6 @@ class InMemoryMapNavigator(MapNavigator):
         return True
 
     def get_neighborhood(self):
-        '''
-        Returns row above and row of the pixel being analysed without last element (as jagged array):
-        [N2, N3, N4]
-        [N1, X]
-        :return:
-        '''
         y = self.__cursor_y
         x = self.__cursor_x
         r1 = [None, None, None]
@@ -62,7 +77,3 @@ class InMemoryMapNavigator(MapNavigator):
     def update_current_element(self, val):
         self.__map[self.__cursor_y][self.__cursor_x] = val
 
-    def reset(self):
-        # resets the pointer only, not the map itself
-        self.__cursor_x = -1  # one element behind so we can start iterating without a need for do...while
-        self.__cursor_y = 0

@@ -29,7 +29,7 @@ def test_it_region_detector_in_memory_map_static_example(static_example):
     assert region_detector.count_regions() == static_example[1]
 
 
-@pytest.mark.skip(msg="Long test. Enable later.")
+# @pytest.mark.skip(msg="Long test. Enable later.")
 def test_it_region_detector_in_memory_map_hardest_possible_large_dim():
     dim = 1000
     map_2d_array = []

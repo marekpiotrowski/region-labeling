@@ -10,13 +10,6 @@ def test_ut_in_memory_map_navigator_move_right():
         assert map_navigator.get_neighborhood() == [[0,0,0], [1,1]]
 
 
-def test_ut_in_memory_map_navigator_reset():
-    with LazyFileMapNavigator(os.path.join(os.getcwd(), 'region_labeling', 'test', 'test_data', 'simple_map.txt')) as map_navigator:
-        map_navigator.reset()
-        map_navigator.move_right_with_wrapping()
-        assert map_navigator.get_neighborhood() == [[0,0,0], [0,1]]
-
-
 def test_ut_in_memory_map_update_element():
     with LazyFileMapNavigator(os.path.join(os.getcwd(), 'region_labeling', 'test', 'test_data', 'simple_map.txt')) as map_navigator:
         map_navigator.move_right_with_wrapping()
