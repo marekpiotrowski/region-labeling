@@ -1,5 +1,3 @@
-import sys
-
 from .map_navigator import MapNavigator
 from ..config import Config
 
@@ -20,7 +18,7 @@ class LazyFileMapNavigator(MapNavigator):
     def __enter__(self):
         self.__map_file = open(self.__abs_file_path, "r")
         self.__load_ctx()
-        # TODO it's assumed that there's some content in the file!
+        # it's assumed that there's some content in the file!
         self.__width = len(self.__ctx[0])
         return self
 
@@ -91,21 +89,19 @@ class LazyFileMapNavigator(MapNavigator):
         try:
             file_for_validation = open(self.__abs_file_path, "r")
         except:
-            # print("Unexpected error when opening the file:", sys.exc_info()[0])
             raise Exception("Problem opening the map file.")
         else:
             lines = [line.strip() for line in file_for_validation.readlines()]
+            # TODO clarify if empty file should yield 0 regions or throw an error!
             if not lines:
                 raise Exception("Map file is empty.")
             for line in lines:
                 try:
-                    number = int(line, 2) # if it consists of 1s and 0s, we should be able to parse it to a number in binary
+                    # if it consists of 1s and 0s, we should be able to parse it to a number in binary
+                    number = int(line, 2)
                 except ValueError:
                     raise Exception("Incorrect entries in map file.")
             file_for_validation.close()
-
-
-        # TODO add validation
         return True
 
     def update_current_element(self, val):
