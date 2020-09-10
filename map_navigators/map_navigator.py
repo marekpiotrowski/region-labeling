@@ -9,3 +9,11 @@ class MapNavigator(ABC):
     @abstractmethod
     def get_neighborhood(self):
         pass
+
+    @abstractmethod
+    def update_current_element(self, val):
+        pass
+
+    @abstractmethod
+    def reset(self):
+        pass
