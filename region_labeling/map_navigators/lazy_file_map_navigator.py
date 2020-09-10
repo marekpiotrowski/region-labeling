@@ -1,32 +1,61 @@
 from .map_navigator import MapNavigator
-# from ..config import Config
+from ..config import Config
 
 class LazyFileMapNavigator(MapNavigator):
     def __init__(self, abs_file_path):
-        self.abs_file_path = abs_file_path
-        # self.__cursor_x = -1
-        # self.__cursor_y = 0
-        # self.reset()
-        # self.__map = map_2d_array
-        # # validation might slow things down, so let's make it configurable
-        # if Config.validate:
-        #     self.__validate()
-        # self.__width = len(self.__map[0])
-        # self.__height = len(self.__map)
+        self.__abs_file_path = abs_file_path
+        # validation might slow things down, so let's make it configurable
+        if Config.validate:
+            self.__validate()
+        self.__cursor_x = -1
+        self.__cursor_y = 1
+        self.reset()
+        self.__map_file = None
+        self.__ctx = None
+        self.__width = None
+        self.__eof_reached = False
 
     def __enter__(self):
+        self.__map_file = open(self.__abs_file_path, "r")
+        self.__load_ctx()
+        # TODO it's assumed that there's some content in the file!
+        self.__width = len(self.__ctx[0])
         return self
 
     def __exit__(self, type, value, traceback):
-        print(self.abs_file_path)
+        if self.__map_file:
+            self.__map_file.close()
+
+    def __load_ctx(self):
+        self.__ctx = [[], []]
+        while True:
+            c = self.__map_file.read(1)
+            if c is '\n':
+                break
+            self.__ctx[1].append(int(c))
+            # first row, so prepend with 0s
+            self.__ctx[0].append(0)
+
+    def __reload_ctx(self):
+        self.__ctx[0] = self.__ctx[-1]
+        self.__ctx[1] = []
+        while True:
+            c = self.__map_file.read(1)
+            if c is '\n':
+                break
+            if c is '':  # EOF
+                self.__eof_reached = True
+                break
+            self.__ctx[1].append(int(c))
 
     def move_right_with_wrapping(self):
-        if self.__cursor_y == self.__height - 1 and self.__cursor_x == self.__width - 1:
+        if self.__cursor_x == self.__width - 1 and self.__eof_reached:
             return False
 
         if self.__cursor_x == self.__width - 1:
+            self.__reload_ctx()
+            self.__cursor_y = 1
             self.__cursor_x = 0
-            self.__cursor_y = self.__cursor_y + 1
             return True
 
         self.__cursor_x = self.__cursor_x + 1
@@ -39,24 +68,21 @@ class LazyFileMapNavigator(MapNavigator):
         [N1, X]
         :return:
         '''
-        y = self.__cursor_y
         x = self.__cursor_x
         r1 = [None, None, None]
         r2 = [None, None]
 
-        if y == 0:
-            r1 = [0, 0, 0]
         if x == 0:
             r1[0] = 0
             r2[0] = 0
         if x == self.__width - 1:
             r1[-1] = 0
 
-        r1 = [r1[0] if r1[0] is not None else self.__map[y - 1][x - 1],
-              r1[1] if r1[1] is not None else self.__map[y - 1][x],
-              r1[2] if r1[2] is not None else self.__map[y - 1][x + 1]]
-        r2 = [r2[0] if r2[0] is not None else self.__map[y][x - 1],
-              r2[1] if r2[1] is not None else self.__map[y][x]]
+        r1 = [r1[0] if r1[0] is not None else self.__ctx[0][x - 1],
+              r1[1] if r1[1] is not None else self.__ctx[0][x],
+              r1[2] if r1[2] is not None else self.__ctx[0][x + 1]]
+        r2 = [r2[0] if r2[0] is not None else self.__ctx[1][x - 1],
+              r2[1] if r2[1] is not None else self.__ctx[1][x]]
 
         return [r1, r2]
 
@@ -65,9 +91,9 @@ class LazyFileMapNavigator(MapNavigator):
         return True
 
     def update_current_element(self, val):
-        self.__map[self.__cursor_y][self.__cursor_x] = val
+        self.__ctx[self.__cursor_y][self.__cursor_x] = val
 
     def reset(self):
         # resets the pointer only, not the map itself
         self.__cursor_x = -1  # one element behind so we can start iterating without a need for do...while
-        self.__cursor_y = 0
+        self.__cursor_y = 1
