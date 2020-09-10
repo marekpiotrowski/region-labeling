@@ -8,7 +8,6 @@ class LazyFileMapNavigator(MapNavigator):
         if Config.validate:
             self.__validate()
         self.__cursor_x = -1
-        self.__cursor_y = 1
         self.reset()
         self.__map_file = None
         self.__ctx = None
@@ -54,7 +53,6 @@ class LazyFileMapNavigator(MapNavigator):
 
         if self.__cursor_x == self.__width - 1:
             self.__reload_ctx()
-            self.__cursor_y = 1
             self.__cursor_x = 0
             return True
 
@@ -91,9 +89,8 @@ class LazyFileMapNavigator(MapNavigator):
         return True
 
     def update_current_element(self, val):
-        self.__ctx[self.__cursor_y][self.__cursor_x] = val
+        self.__ctx[1][self.__cursor_x] = val
 
     def reset(self):
-        # resets the pointer only, not the map itself
+        # resets the internal pointer only, not the file pointer
         self.__cursor_x = -1  # one element behind so we can start iterating without a need for do...while
-        self.__cursor_y = 1

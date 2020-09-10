@@ -2,7 +2,8 @@ class RegionDetector(object):
     def __init__(self, map_navigator):
         self.map_navigator = map_navigator
 
-    def __get_labels_from_neighborhood(self, neighborhood):
+    @staticmethod
+    def __get_labels_from_neighborhood(neighborhood):
         result = []
         for el in neighborhood[0]:
             if el is not 0:
