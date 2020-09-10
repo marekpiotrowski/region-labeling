@@ -56,6 +56,7 @@ class InMemoryMapNavigator(MapNavigator):
 
     def __validate(self):
         # TODO add validation
+        # let's skip it for in-memory array for now
         return True
 
     def update_current_element(self, val):

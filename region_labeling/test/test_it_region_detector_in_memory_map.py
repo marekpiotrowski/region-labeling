@@ -4,7 +4,6 @@ from ..map_navigators.in_memory_map_navigator import InMemoryMapNavigator
 from ..region_detector import RegionDetector
 
 class TestData(object):
-    # lecture_example = []
     pdf_example = [[0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 1, 0, 0, 0, 0, 0, 0, 0],
                     [1, 1, 1, 0, 0, 0, 1, 0, 0],

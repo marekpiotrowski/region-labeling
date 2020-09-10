@@ -24,12 +24,3 @@
 #                                 [1, 0, 1, 0, 1]])
 #     rd2 = RegionDetector(mn2)
 #     print(rd2.count_regions())
-
-dim = 1000
-f = open('test.txt', 'w+')
-for i in range(dim):
-    row = []
-    for j in range(dim):
-        f.write(str((j + ((i + 1) % 2)) % 2))
-    f.write('\n')
-f.close()

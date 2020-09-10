@@ -1,5 +1,8 @@
+import sys
+
 from .map_navigator import MapNavigator
 from ..config import Config
+
 
 class LazyFileMapNavigator(MapNavigator):
     def __init__(self, abs_file_path):
@@ -85,6 +88,23 @@ class LazyFileMapNavigator(MapNavigator):
         return [r1, r2]
 
     def __validate(self):
+        try:
+            file_for_validation = open(self.__abs_file_path, "r")
+        except:
+            # print("Unexpected error when opening the file:", sys.exc_info()[0])
+            raise Exception("Problem opening the map file.")
+        else:
+            lines = [line.strip() for line in file_for_validation.readlines()]
+            if not lines:
+                raise Exception("Map file is empty.")
+            for line in lines:
+                try:
+                    number = int(line, 2) # if it consists of 1s and 0s, we should be able to parse it to a number in binary
+                except ValueError:
+                    raise Exception("Incorrect entries in map file.")
+            file_for_validation.close()
+
+
         # TODO add validation
         return True
 
