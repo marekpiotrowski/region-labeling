@@ -25,6 +25,13 @@ user:~/region-labeling$ ./count_islands.sh region_labeling/test/test_data/simple
 ```
 The script shall yield number of "regions" or "islands" within a given map.
 
+python3 has been hardcoded as the interpreter.
+
+Alternatively, if you want to run the application using interpreter of your desire, application can be run as follows:
+```
+user:~/region-labeling$ python3 -m region_labeling region_labeling/test/test_data/simple_map_pdf.txt
+```
+
 # Running tests
 Considering tests rely on pytest, requirements will have to be installed. **It's strongly advised
 to create a virtual environment at this point, as we wouldn't like to pollute system with necessary packages**.
